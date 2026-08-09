@@ -1,0 +1,27 @@
+flutter_native_splash:
+  # =========================
+  # GENERAL SPLASH SCREEN
+  # =========================
+
+  color: "#FAF5EE"
+
+  image: assets/Logo.png
+
+  android: true
+  ios: true
+  web: false
+
+  fullscreen: true
+
+  # =========================
+  # ANDROID 12+
+  # =========================
+
+  android_12:
+    color: "#FAF5EE"
+
+    # Main logo
+    image: assets/Logo.png
+
+
+    
