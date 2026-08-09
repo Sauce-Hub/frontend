@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Auth_Screens/Log_In_Screen.dart';
 
  class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -8,7 +9,11 @@ import 'package:flutter/material.dart';
     return Scaffold(
       backgroundColor: Color(0xFFFFF8F2),
       body: Center(
+
+        //the main container
         child: Container(
+          
+          //decoration
           width: 320,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           decoration: BoxDecoration(
@@ -23,8 +28,8 @@ import 'package:flutter/material.dart';
               ),
             ]
           ),
-          child: Column(
 
+          child: Column(
             //image
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -33,6 +38,8 @@ import 'package:flutter/material.dart';
                fit: BoxFit.contain,
                ),
                const SizedBox(height: 28),
+
+               //text row
               Row(
                 children: [
                 Text(
@@ -68,12 +75,31 @@ import 'package:flutter/material.dart';
           ),
           const SizedBox(height: 28),
 
-          // Log In Button
+          // log in button
           SizedBox(
             width: double.infinity,
             height: 48,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const LoginScreen(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(0, 1);
+                              const end = Offset.zero;
+                              final tween = Tween(begin: begin, end: end);
+                              final offsetAnimation = animation.drive(tween);
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                      ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor:(Color(0xFFF97316)),
                 elevation: 0,
@@ -93,7 +119,7 @@ import 'package:flutter/material.dart';
           ),
           const SizedBox(height: 12),
 
-          // Sign Up Button
+          // sign up button
           SizedBox(
             width: double.infinity,
             height: 48,
@@ -117,6 +143,8 @@ import 'package:flutter/material.dart';
           ),
           
           SizedBox(height: 50),
+
+          //slogan raw text
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
                 children: [
