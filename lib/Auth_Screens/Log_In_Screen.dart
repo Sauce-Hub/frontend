@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Auth_Screens/Onboarding_Screen.dart';
+import 'package:frontend/Home_Screens/Navigation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _SauceHubLoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SauceHubLoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordObscured = true;
@@ -224,7 +225,24 @@ class _SauceHubLoginScreenState extends State<LoginScreen> {
                       height: 48,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Login action
+                          Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const HomeScreen(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(1, 0);
+                              const end = Offset.zero;
+                              final tween = Tween(begin: begin, end: end);
+                              final offsetAnimation = animation.drive(tween);
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                      ),
+                );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFFF97316),
@@ -283,20 +301,10 @@ class _SauceHubLoginScreenState extends State<LoginScreen> {
                 ],
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 90),
 
               // Footer Links & Copyright
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildFooterLink('Terms of Service'),
-                  _buildDotSeparator(),
-                  _buildFooterLink('Privacy Policy'),
-                  _buildDotSeparator(),
-                  _buildFooterLink('Help Center'),
-                ],
-              ),
-              const SizedBox(height: 8),
+              
               Text(
                 'Taste. Connect. Create',
                 style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
@@ -310,27 +318,5 @@ class _SauceHubLoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildFooterLink(String title) {
-    return GestureDetector(
-      onTap: () {},
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 11,
-          color: Colors.grey.shade600,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDotSeparator() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0),
-      child: Text(
-        '•',
-        style: TextStyle(fontSize: 10, color: Colors.grey.shade400),
-      ),
-    );
-  }
+  
 }
