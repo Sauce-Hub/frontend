@@ -13,6 +13,7 @@ Widget categoryItem(IconData icon, String label) {
         ),
         SizedBox(height: 5),
         Text(label),
+        SizedBox(width: 5,),
       ],
     );
   }

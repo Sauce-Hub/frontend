@@ -55,24 +55,42 @@ class SearchScreen extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    categoryItem(
-                      Icons.free_breakfast_outlined,
-                      'Breakfast',
-                    ),
-
-                    categoryItem(
-                      Icons.lunch_dining_outlined,
-                      'Lunch',
-                    ),
-
-                    categoryItem(
-                      Icons.apple_outlined,
-                      'Dinner',
-                    ),
-                  ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      categoryItem(
+                        Icons.bakery_dining,
+                        'Breakfast',
+                      ),
+                      SizedBox(width: 5,),
+                      categoryItem(
+                        Icons.lunch_dining_outlined,
+                        'Lunch',
+                      ),
+                      SizedBox(width: 8,),
+                      categoryItem(
+                        Icons.apple_outlined,
+                        'Dinner',
+                      ),
+                      SizedBox(width: 10,),
+                      categoryItem(
+                        Icons.cake,
+                        'Sweets',
+                      ),
+                     SizedBox(width: 5,),
+                      categoryItem(
+                        Icons.coffee,
+                        'Hot Drinks',
+                      ),
+                      SizedBox(width: 5,),
+                      categoryItem(
+                        Icons.local_drink,
+                        'Iced Drinks',
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(height: 20),

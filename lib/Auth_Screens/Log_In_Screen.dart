@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Auth_Screens/Forget_Password.dart';
 import 'package:frontend/Auth_Screens/Onboarding_Screen.dart';
 import 'package:frontend/Home_Screens/Home_Tab.dart';
 import 'package:frontend/Home_Screens/Navigation.dart';
@@ -202,7 +203,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                         builder: (context) => ForgotPasswordScreen(),
+                           ),
+                          );
+                        },
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,
