@@ -1,24 +1,30 @@
-
 import 'package:flutter/material.dart';
+import 'package:frontend/Home_Screens/Detailed_Screens.dart';
 
 class RecipeCard extends StatefulWidget {
+  final String recipeId;
   final String username;
   final String timeAgo;
   final String userImageUrl;
   final String recipeImageUrl;
   final String title;
   final String category;
+  final String ingerdiants;
+  final String instructions;
   final int likesCount;
   final int commentsCount;
 
   const RecipeCard({
     Key? key,
+    required this.recipeId,
     required this.username,
     required this.timeAgo,
     required this.userImageUrl,
     required this.recipeImageUrl,
     required this.title,
     required this.category,
+    required this.ingerdiants,
+    required this.instructions,
     required this.likesCount,
     required this.commentsCount,
   }) : super(key: key);
@@ -75,17 +81,34 @@ class _RecipeCardState extends State<RecipeCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      borderRadius: BorderRadius.circular(20),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RecipeDetailsScreen(
+              recipeId: widget.recipeId,
+              username: widget.username,
+              timeAgo: widget.timeAgo,
+              userImageUrl: widget.userImageUrl,
+              recipeImageUrl: widget.recipeImageUrl,
+              title: widget.title,
+              category: widget.category,
+              ingerdiants: widget.ingerdiants,
+              instructions: widget.instructions,
+              likesCount: currentLikes,
+              commentsCount: widget.commentsCount,
+            ),
+          ),
+        );
+      },
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-            ),
+            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10),
           ],
         ),
         child: Column(
@@ -93,17 +116,16 @@ class _RecipeCardState extends State<RecipeCard> {
           children: [
             // User information
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 children: [
                   CircleAvatar(
                     radius: 20,
                     backgroundImage: NetworkImage(widget.userImageUrl),
                   ),
+
                   const SizedBox(width: 12),
+
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -115,7 +137,9 @@ class _RecipeCardState extends State<RecipeCard> {
                           color: Colors.black87,
                         ),
                       ),
+
                       const SizedBox(height: 2),
+
                       Text(
                         widget.timeAgo,
                         style: const TextStyle(
@@ -125,12 +149,11 @@ class _RecipeCardState extends State<RecipeCard> {
                       ),
                     ],
                   ),
+
                   const Spacer(),
+
                   IconButton(
-                    icon: const Icon(
-                      Icons.more_horiz,
-                      color: Colors.black54,
-                    ),
+                    icon: const Icon(Icons.more_horiz, color: Colors.black54),
                     onPressed: () {},
                   ),
                 ],
@@ -151,14 +174,17 @@ class _RecipeCardState extends State<RecipeCard> {
 
             const SizedBox(height: 12),
 
-            // Recipe image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                widget.recipeImageUrl,
-                width: double.infinity,
-                height: 250,
-                fit: BoxFit.cover,
+            // Recipe image + Hero
+            Hero(
+              tag: 'recipe_${widget.recipeId}',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  widget.recipeImageUrl,
+                  width: double.infinity,
+                  height: 250,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
 
@@ -167,10 +193,7 @@ class _RecipeCardState extends State<RecipeCard> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 widget.category,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14,
-                ),
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
 
@@ -182,9 +205,7 @@ class _RecipeCardState extends State<RecipeCard> {
                   // Like
                   IconButton(
                     icon: Icon(
-                      isLiked
-                          ? Icons.favorite
-                          : Icons.favorite_border,
+                      isLiked ? Icons.favorite : Icons.favorite_border,
                       color: isLiked ? Colors.red : Colors.grey,
                     ),
                     onPressed: () {
@@ -220,9 +241,7 @@ class _RecipeCardState extends State<RecipeCard> {
                   // Save
                   IconButton(
                     icon: Icon(
-                      isSaved
-                          ? Icons.bookmark
-                          : Icons.bookmark_border,
+                      isSaved ? Icons.bookmark : Icons.bookmark_border,
                       color: isSaved ? Colors.amber : Colors.grey,
                     ),
                     onPressed: () {
@@ -240,4 +259,3 @@ class _RecipeCardState extends State<RecipeCard> {
     );
   }
 }
-

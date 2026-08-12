@@ -27,21 +27,29 @@ class HomeTab extends StatelessWidget {
               title: 'Avocado Toast',
               category: 'Breakfast',
               likesCount: 245,
-              commentsCount: 18,
+              commentsCount: 18, recipeId: '3',
+               ingerdiants: '',
+                instructions: '',
+               
             ),
 
             const SizedBox(height: 16),
 
              RecipeCard(
               username: '@hana',
-              timeAgo: '1h ago',
+              timeAgo: '4h ago',
               userImageUrl: 'https://i.pinimg.com/736x/f4/f8/a6/f4f8a62a70b8d9b2a8c91f1bcd7a74a2.jpg',
               recipeImageUrl: 'https://i.pinimg.com/1200x/6e/1e/06/6e1e0663df4ce9b20244dddf2a8233ff.jpg',
               title: 'Creamy pasta',
               category: 'launch',
               likesCount: 155,
               commentsCount: 3,
-            ),
+               recipeId: '4', 
+               ingerdiants: 'dry pasta\nheavy cream\nParmesan cheese.',
+             instructions: 
+             '''Boil the Pasta\nBuild the Creamy Base\nCombine and Sauce
+             '''
+             ,),
 
             
           ]

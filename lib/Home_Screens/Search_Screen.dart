@@ -45,11 +45,14 @@ class SearchScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Categories
-                const Text(
-                  "Categories",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    "Categories",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
 
@@ -60,35 +63,48 @@ class SearchScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      categoryItem(
-                        Icons.bakery_dining,
-                        'Breakfast',
-                      ),
-                      SizedBox(width: 5,),
-                      categoryItem(
-                        Icons.lunch_dining_outlined,
-                        'Lunch',
-                      ),
-                      SizedBox(width: 8,),
-                      categoryItem(
-                        Icons.apple_outlined,
-                        'Dinner',
-                      ),
-                      SizedBox(width: 10,),
-                      categoryItem(
-                        Icons.cake,
-                        'Sweets',
-                      ),
-                     SizedBox(width: 5,),
-                      categoryItem(
-                        Icons.coffee,
-                        'Hot Drinks',
-                      ),
-                      SizedBox(width: 5,),
-                      categoryItem(
-                        Icons.local_drink,
-                        'Iced Drinks',
-                      ),
+
+                      CategoryItem(
+                      icon: Icons.bakery_dining, 
+                      label: 'Breakfast',
+                      isSelected: false,
+                       onTap: () {  },),
+                      SizedBox(width: 5),
+                      
+                      CategoryItem(
+                      icon: Icons.lunch_dining, 
+                      label: 'Lunch',
+                      isSelected: false,
+                       onTap: () {  },),
+                       SizedBox(width: 5),
+
+                       CategoryItem(
+                      icon: Icons.dinner_dining, 
+                      label: 'Dinner',
+                      isSelected: false,
+                       onTap: () {  },),
+                       SizedBox(width: 5),
+
+                       CategoryItem(
+                      icon: Icons.cake, 
+                      label: 'Sweets',
+                      isSelected: true,
+                       onTap: () {  },),
+                       SizedBox(width: 5),
+
+                       CategoryItem(
+                      icon: Icons.coffee, 
+                      label: 'Hot Drinks',
+                      isSelected: false,
+                       onTap: () {  },),
+                       SizedBox(width: 5),
+
+                       CategoryItem(
+                      icon: Icons.local_drink, 
+                      label: 'Iced Drinks',
+                      isSelected: false,
+                       onTap: () {  },)
+
                     ],
                   ),
                 ),
@@ -120,7 +136,10 @@ class SearchScreen extends StatelessWidget {
                   title: 'Chocolate Cake',
                   category: 'Sweets',
                   likesCount: 35125,
-                  commentsCount: 180,
+                  commentsCount: 180, 
+                  recipeId: '1', 
+                  ingerdiants: '', 
+                  instructions: '',
                 ),
 
                 const SizedBox(height: 16),
@@ -128,7 +147,7 @@ class SearchScreen extends StatelessWidget {
                 // Recipe Card 2
                 RecipeCard(
                   username: '@nadin',
-                  timeAgo: '1h ago',
+                  timeAgo: '13h ago',
                   userImageUrl:
                       'https://i.pinimg.com/736x/f4/f8/a6/f4f8a62a70b8d9b2a8c91f1bcd7a74a2.jpg',
                   recipeImageUrl:
@@ -136,7 +155,10 @@ class SearchScreen extends StatelessWidget {
                   title: 'Shrimp',
                   category: 'Lunch',
                   likesCount: 15,
-                  commentsCount: 1,
+                  commentsCount: 1, 
+                  recipeId: '2',
+                   ingerdiants: '', 
+                   instructions: '',
                 ),
               ],
             ),
