@@ -8,6 +8,7 @@ class HomeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
     appBar: AppBar(
+      leading: Icon(Icons.food_bank, color: Color(0xFFF97316),),
       backgroundColor: Color.fromARGB(255, 252, 238, 228),
       centerTitle: true,
       title: Text("Sauce hub", selectionColor: Color(0xFFF97316),),
