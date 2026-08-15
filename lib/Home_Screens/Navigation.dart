@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> screens = [
     getSlideUpWidget(child: HomeTab()),        
     getSlideUpWidget(child: SearchScreen()),
-    getSlideUpWidget(child: AddPostScreen()),
     getSlideUpWidget(child: ChatbotScreen()),
     getSlideUpWidget(child: ProfileScreen()),
   ];
@@ -58,8 +57,29 @@ class _HomeScreenState extends State<HomeScreen> {
           bottomBarItem(icon: Icons.person_2_outlined, text: 'Profile'),
         ],
         onTap: (value) {
-          _pageController.jumpToPage(value);
-        },
+          if(value==2){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddPostScreen(),
+              ),
+            );
+            return;
+          }
+          int pageIndex;
+
+          if (value == 3) {
+            pageIndex = 2;
+          } else if (value == 4) {
+            pageIndex = 3;
+          } else {
+            pageIndex = value;
+          }
+
+          _pageController.jumpToPage(pageIndex);
+
+
+          },
         kIconSize: 24,
         kBottomRadius: 28,
       ),
