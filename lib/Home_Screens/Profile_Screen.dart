@@ -262,10 +262,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                EditProfileScreen(
-                                  // name: name,
-                                  // username: username,
-                                  // profileImage: profileImage,
+                                EditProfileScreen(name: '', username: '', profileImage: '',
+
                                 ),
                           ),
                         );
