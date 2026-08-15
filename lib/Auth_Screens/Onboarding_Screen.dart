@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Auth_Screens/Log_In_Screen.dart';
+import 'package:frontend/Auth_Screens/Sign_Up_Screen.dart';
 
  class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -124,7 +125,26 @@ import 'package:frontend/Auth_Screens/Log_In_Screen.dart';
             width: double.infinity,
             height: 48,
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                    const SignupScreen(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      const begin = Offset(0, 1);
+                      const end = Offset.zero;
+                      final tween = Tween(begin: begin, end: end);
+                      final offsetAnimation = animation.drive(tween);
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              },
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: Color(0xFFF97316), width: 1.5),
                 shape: RoundedRectangleBorder(
