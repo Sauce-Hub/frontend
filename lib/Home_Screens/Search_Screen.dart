@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Widgets/Category_Items.dart';
 import 'package:frontend/Widgets/Post_widgets.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+
+  // The currently selected category
+  String selectedCategory = 'Sweets';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -22,8 +29,8 @@ class SearchScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.search),
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.search),
                           hintText: "Search",
                           border: InputBorder.none,
                           fillColor: Colors.white,
@@ -45,9 +52,9 @@ class SearchScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Categories
-                Align(
+                const Align(
                   alignment: Alignment.centerLeft,
-                  child: const Text(
+                  child: Text(
                     "Categories",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -58,53 +65,87 @@ class SearchScreen extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+                // Categories List
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
 
                       CategoryItem(
-                      icon: Icons.bakery_dining, 
-                      label: 'Breakfast',
-                      isSelected: false,
-                       onTap: () {  },),
-                      SizedBox(width: 5),
-                      
+                        icon: Icons.bakery_dining,
+                        label: 'Breakfast',
+                        isSelected: selectedCategory == 'Breakfast',
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = 'Breakfast';
+                          });
+                        },
+                      ),
+
+                      const SizedBox(width: 5),
+
                       CategoryItem(
-                      icon: Icons.lunch_dining, 
-                      label: 'Lunch',
-                      isSelected: false,
-                       onTap: () {  },),
-                       SizedBox(width: 5),
+                        icon: Icons.lunch_dining,
+                        label: 'Lunch',
+                        isSelected: selectedCategory == 'Lunch',
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = 'Lunch';
+                          });
+                        },
+                      ),
 
-                       CategoryItem(
-                      icon: Icons.dinner_dining, 
-                      label: 'Dinner',
-                      isSelected: false,
-                       onTap: () {  },),
-                       SizedBox(width: 5),
+                      const SizedBox(width: 5),
 
-                       CategoryItem(
-                      icon: Icons.cake, 
-                      label: 'Sweets',
-                      isSelected: true,
-                       onTap: () {  },),
-                       SizedBox(width: 5),
+                      CategoryItem(
+                        icon: Icons.dinner_dining,
+                        label: 'Dinner',
+                        isSelected: selectedCategory == 'Dinner',
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = 'Dinner';
+                          });
+                        },
+                      ),
 
-                       CategoryItem(
-                      icon: Icons.coffee, 
-                      label: 'Hot Drinks',
-                      isSelected: false,
-                       onTap: () {  },),
-                       SizedBox(width: 5),
+                      const SizedBox(width: 5),
 
-                       CategoryItem(
-                      icon: Icons.local_drink, 
-                      label: 'Iced Drinks',
-                      isSelected: false,
-                       onTap: () {  },)
+                      CategoryItem(
+                        icon: Icons.cake,
+                        label: 'Sweets',
+                        isSelected: selectedCategory == 'Sweets',
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = 'Sweets';
+                          });
+                        },
+                      ),
 
+                      const SizedBox(width: 5),
+
+                      CategoryItem(
+                        icon: Icons.coffee,
+                        label: 'Hot Drinks',
+                        isSelected: selectedCategory == 'Hot Drinks',
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = 'Hot Drinks';
+                          });
+                        },
+                      ),
+
+                      const SizedBox(width: 5),
+
+                      CategoryItem(
+                        icon: Icons.local_drink,
+                        label: 'Iced Drinks',
+                        isSelected: selectedCategory == 'Iced Drinks',
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = 'Iced Drinks';
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -129,17 +170,21 @@ class SearchScreen extends StatelessWidget {
                 RecipeCard(
                   username: '@mounir',
                   timeAgo: '1h ago',
-                  userImageUrl:
-                      'https://i.pinimg.com/736x/6f/da/c0/6fdac023f39bdd0ed31f23c3df078708.jpg',
                   recipeImageUrl:
                       'https://i.pinimg.com/736x/2b/ea/39/2bea3906382038bba9992ea9083180f4.jpg',
-                  title: 'Chocolate Cake',
+                  name: 'Chocolate Cake',
                   category: 'Sweets',
                   likesCount: 35125,
-                  commentsCount: 180, 
-                  recipeId: '1', 
-                  ingerdiants: '', 
+                  commentsCount: 180,
+                  recipeId: '1',
+                  ingerdiants: '',
                   instructions: '',
+                   caption: '',
+                    estimatedTime: 99,
+                     fats: 0,
+                      carbs: 90,
+                       protein: 390,
+                        Calories: 970,
                 ),
 
                 const SizedBox(height: 16),
@@ -148,17 +193,21 @@ class SearchScreen extends StatelessWidget {
                 RecipeCard(
                   username: '@nadin',
                   timeAgo: '13h ago',
-                  userImageUrl:
-                      'https://i.pinimg.com/736x/f4/f8/a6/f4f8a62a70b8d9b2a8c91f1bcd7a74a2.jpg',
                   recipeImageUrl:
                       'https://i.pinimg.com/1200x/d3/48/1b/d3481bd5ea30bd9d5350a15c5aea9cc1.jpg',
-                  title: 'Shrimp',
+                  name: 'Shrimp',
                   category: 'Lunch',
                   likesCount: 15,
-                  commentsCount: 1, 
+                  commentsCount: 1,
                   recipeId: '2',
-                   ingerdiants: '', 
-                   instructions: '',
+                  ingerdiants: '',
+                  instructions: '', 
+                  caption: '', 
+                  estimatedTime: 80,
+                   fats: 9, 
+                   carbs: 90,
+                    protein: 0,
+                     Calories: 970,
                 ),
               ],
             ),

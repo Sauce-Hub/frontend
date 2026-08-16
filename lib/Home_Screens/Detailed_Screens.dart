@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Home_Screens/Comments_Screen.dart';
 
 class RecipeDetailsScreen extends StatefulWidget {
   final String recipeId;
   final String username;
   final String timeAgo;
-  final String userImageUrl;
   final String recipeImageUrl;
   final String title;
   final String category;
@@ -18,7 +18,6 @@ class RecipeDetailsScreen extends StatefulWidget {
     required this.recipeId,
     required this.username,
     required this.timeAgo,
-    required this.userImageUrl,
     required this.recipeImageUrl,
     required this.title,
     required this.category,
@@ -50,12 +49,6 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     currentComments = widget.commentsCount;
   }
 
-  @override
-  void dispose() {
-    commentController.dispose();
-    super.dispose();
-  }
-
   void toggleLike() {
     setState(() {
       isLiked = !isLiked;
@@ -74,11 +67,6 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     });
   }
 
-  void toggleCommentField() {
-    setState(() {
-      showCommentField = !showCommentField;
-    });
-  }
 
   void addComment() {
     if (commentController.text.trim().isEmpty) {
@@ -157,10 +145,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                   // User
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: NetworkImage(widget.userImageUrl),
-                      ),
+                      Icon(Icons.person_2_outlined, color: Color(0xFFF97316),),
 
                       const SizedBox(width: 10),
 
@@ -216,7 +201,14 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
 
                       // COMMENT
                       IconButton(
-                        onPressed: toggleCommentField,
+                        onPressed: () {
+                          Navigator.push(
+                        context,
+                          MaterialPageRoute(
+                         builder: (context) => CommentsScreen(),
+                           ),
+                      );
+                        },
                         icon: const Icon(
                           Icons.chat_bubble_outline,
                           color: Colors.grey,
