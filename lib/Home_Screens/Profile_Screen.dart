@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Home_Screens/Edit_Profile_Screen.dart';
 import 'package:frontend/Widgets/Profile_Post.dart';
+import 'package:frontend/data/ing.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,19 +23,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'https://images.unsplash.com/photo-1473093295043-cdd812d0e601',
       'title': 'Creamy Pasta',
       'category': 'Dinner',
+      'ingredients': [
+        Ingredient(
+          name: 'Pasta',
+          quantity: '500',
+          unit: 'g',
+        ),
+        Ingredient(
+          name: 'Heavy Cream',
+          quantity: '1',
+          unit: 'cup',
+        ),
+        Ingredient(
+          name: 'Garlic',
+          quantity: '2',
+          unit: 'cloves',
+        ),
+        Ingredient(
+          name: 'Parmesan Cheese',
+          quantity: '50',
+          unit: 'g',
+        ),
+      ],
 
-      'ingerdiants':
-      '500g Pasta\n'
-          '1 cup Heavy Cream\n'
-          '2 cloves Garlic\n'
-          '50g Parmesan Cheese',
-
-      'instructions':
-      '1. Boil pasta in a large pot of salted water until al dente.\n\n'
-          '2. Heat oil in a pan over medium heat.\n\n'
-          '3. Sauté minced garlic until fragrant.\n\n'
-          '4. Add heavy cream and parmesan cheese.\n\n'
-          '5. Add the pasta and mix well.',
+      'instructions': [
+        'Boil pasta in a large pot of salted water until al dente.',
+        'Heat oil in a pan over medium heat.',
+        'Sauté minced garlic until fragrant.',
+        'Add heavy cream and parmesan cheese.',
+        'Add the pasta and mix well.',
+      ],
 
       'likesCount': 120,
       'commentsCount': 18,
@@ -51,18 +69,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'title': 'Berry Cheesecake',
       'category': 'Dessert',
 
-      'ingerdiants':
-      '200g Cream Cheese\n'
-          '1 cup Berries\n'
-          '100g Biscuits\n'
-          '50g Butter',
+      'ingredients': [
+        Ingredient(
+          name: 'Pasta',
+          quantity: '500',
+          unit: 'g',
+        ),
+        Ingredient(
+          name: 'Heavy Cream',
+          quantity: '1',
+          unit: 'cup',
+        ),
+        Ingredient(
+          name: 'Garlic',
+          quantity: '2',
+          unit: 'cloves',
+        ),
+        Ingredient(
+          name: 'Parmesan Cheese',
+          quantity: '50',
+          unit: 'g',
+        ),
+      ],
 
-      'instructions':
-      '1. Crush the biscuits and mix with melted butter.\n\n'
-          '2. Press the mixture into a cake pan.\n\n'
-          '3. Add the cream cheese mixture.\n\n'
-          '4. Bake until fully set.\n\n'
-          '5. Top with fresh berries.',
+      'instructions': [
+        'Boil pasta in a large pot of salted water until al dente.',
+        'Heat oil in a pan over medium heat.',
+        'Sauté minced garlic until fragrant.',
+        'Add heavy cream and parmesan cheese.',
+        'Add the pasta and mix well.',
+      ],
       'likesCount': 245,
       'commentsCount': 32,
     },
@@ -79,18 +115,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'title': 'Grilled Steak',
       'category': 'Dinner',
 
-      'ingerdiants':
-      '200g Cream Cheese\n'
-          '1 cup Berries\n'
-          '100g Biscuits\n'
-          '50g Butter',
+      'ingredients': [
+        Ingredient(
+          name: 'Pasta',
+          quantity: '500',
+          unit: 'g',
+        ),
+        Ingredient(
+          name: 'Heavy Cream',
+          quantity: '1',
+          unit: 'cup',
+        ),
+        Ingredient(
+          name: 'Garlic',
+          quantity: '2',
+          unit: 'cloves',
+        ),
+        Ingredient(
+          name: 'Parmesan Cheese',
+          quantity: '50',
+          unit: 'g',
+        ),
+      ],
 
-      'instructions':
-      '1. Crush the biscuits and mix with melted butter.\n\n'
-          '2. Press the mixture into a cake pan.\n\n'
-          '3. Add the cream cheese mixture.\n\n'
-          '4. Bake until fully set.\n\n'
-          '5. Top with fresh berries.',
+      'instructions': [
+        'Boil pasta in a large pot of salted water until al dente.',
+        'Heat oil in a pan over medium heat.',
+        'Sauté minced garlic until fragrant.',
+        'Add heavy cream and parmesan cheese.',
+        'Add the pasta and mix well.',
+      ],
 
       'likesCount': 320,
       'commentsCount': 27,
@@ -430,11 +484,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               recipeId: recipes[index]['recipeId'],
                               username: recipes[index]['username'],
                               timeAgo: recipes[index]['timeAgo'],
-                              userImageUrl: recipes[index]['userImageUrl'],
                               recipeImageUrl: recipes[index]['recipeImageUrl'],
                               title: recipes[index]['title'],
                               category: recipes[index]['category'],
-                              ingerdiants: recipes[index]['ingerdiants'],
+                              ingredients: recipes[index]['ingredients'],
                               instructions: recipes[index]['instructions'],
                               likesCount: recipes[index]['likesCount'],
                               commentsCount: recipes[index]['commentsCount'],
