@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Home_Screens/Comments_Screen.dart';
 import 'package:frontend/Home_Screens/Detailed_Screens.dart';
+import 'package:frontend/data/ing.dart';
 
 class RecipeCard extends StatefulWidget {
   final String recipeId;
+
   final String username;
+  final String userHandle;
   final String timeAgo;
+
   final String recipeImageUrl;
   final String name;
   final String category;
   final String caption;
+
   final int estimatedTime;
-  final String ingerdiants;
-  final String instructions;
-  
+  final String difficulty;
+
+  final List<Ingredient> ingredients;
+  final List<String> instructions;
+
   final double Calories;
   final double fats;
   final double carbs;
@@ -25,19 +32,27 @@ class RecipeCard extends StatefulWidget {
   const RecipeCard({
     Key? key,
     required this.recipeId,
+
     required this.username,
+    required this.userHandle,
     required this.timeAgo,
+
     required this.recipeImageUrl,
     required this.name,
     required this.category,
     required this.caption,
+
     required this.estimatedTime,
-    required this.ingerdiants,
+    required this.difficulty,
+
+    required this.ingredients,
     required this.instructions,
+
     required this.Calories,
     required this.fats,
     required this.carbs,
     required this.protein,
+
     required this.likesCount,
     required this.commentsCount,
   }) : super(key: key);
@@ -74,10 +89,13 @@ class _RecipeCardState extends State<RecipeCard> {
               recipeImageUrl: widget.recipeImageUrl,
               title: widget.name,
               category: widget.category,
-              ingerdiants: widget.ingerdiants,
+              ingredients: widget.ingredients,
               instructions: widget.instructions,
               likesCount: currentLikes,
               commentsCount: widget.commentsCount,
+              userHandle: 'aaa@email.com',
+              difficulty: 'medium', cookingTime: '10 min',
+
             ),
           ),
         );
@@ -280,62 +298,9 @@ class _RecipeCardState extends State<RecipeCard> {
 
             const SizedBox(height: 16),
 
-            // =========================
-            // Nutrition Information
-            // =========================
-
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
-
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 8,
-                ),
-
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF8F2),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-
-                child: Row(
-                  children: [
-
-                   _NutritionItem(
-                      title: 'Calories',
-                      value: '${widget.Calories}Kcal',
-                    ),
-
-                    _NutritionItem(
-                      title: 'Protein',
-                      value: '${widget.protein}g',
-                    ),
-
-                    const _NutritionDivider(),
-
-                    _NutritionItem(
-                      title: 'Carbs',
-                      value: '${widget.carbs}g',
-                    ),
-
-                    const _NutritionDivider(),
-
-                    _NutritionItem(
-                      title: 'Fats',
-                      value: '${widget.fats}g',
-                    ),
-                  ],
-                ),
-              ),
-            ),
 
             const SizedBox(height: 8),
 
-            // =========================
-            // Actions
-            // =========================
 
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -393,7 +358,9 @@ class _RecipeCardState extends State<RecipeCard> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              CommentsScreen(),
+                              CommentsScreen(
+                                recipeId: widget.recipeId,
+                              ),
                         ),
                       );
                     },

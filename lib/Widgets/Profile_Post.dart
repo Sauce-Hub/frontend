@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Home_Screens/Detailed_Screens.dart';
+import 'package:frontend/data/ing.dart';
 
 class ProfilePost extends StatelessWidget {
   final String recipeId;
   final String username;
   final String timeAgo;
-  final String userImageUrl;
   final String recipeImageUrl;
   final String title;
   final String category;
 
-  final String ingerdiants;
-  final String instructions;
+  final List<Ingredient> ingredients;
+  final List<String> instructions;
 
   final int likesCount;
   final int commentsCount;
@@ -21,11 +21,10 @@ class ProfilePost extends StatelessWidget {
     required this.recipeId,
     required this.username,
     required this.timeAgo,
-    required this.userImageUrl,
     required this.recipeImageUrl,
     required this.title,
     required this.category,
-    required this.ingerdiants,
+    required this.ingredients,
     required this.instructions,
     required this.likesCount,
     required this.commentsCount,
@@ -41,14 +40,16 @@ class ProfilePost extends StatelessWidget {
                 recipeId: recipeId,
                 username: username,
                 timeAgo: timeAgo,
-                userImageUrl: userImageUrl,
                 recipeImageUrl: recipeImageUrl,
                 title: title,
                 category: category,
-                ingerdiants: ingerdiants,
+                ingredients: ingredients,
                 instructions: instructions,
                 likesCount: likesCount,
                 commentsCount: commentsCount,
+                userHandle: 'aaa@email.com',
+                difficulty: 'medium', cookingTime: '10 min',
+
               ),
             ),
           );

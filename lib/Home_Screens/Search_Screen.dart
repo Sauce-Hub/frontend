@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Widgets/Category_Items.dart';
 import 'package:frontend/Widgets/Post_widgets.dart';
 
+import '../data/ing.dart';
+
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -168,46 +170,127 @@ class _SearchScreenState extends State<SearchScreen> {
 
                 // Recipe Card 1
                 RecipeCard(
-                  username: '@mounir',
-                  timeAgo: '1h ago',
+                  username: '@hana',
+                  timeAgo: '4h ago',
+
                   recipeImageUrl:
-                      'https://i.pinimg.com/736x/2b/ea/39/2bea3906382038bba9992ea9083180f4.jpg',
-                  name: 'Chocolate Cake',
-                  category: 'Sweets',
-                  likesCount: 35125,
-                  commentsCount: 180,
-                  recipeId: '1',
-                  ingerdiants: '',
-                  instructions: '',
-                   caption: '',
-                    estimatedTime: 99,
-                     fats: 0,
-                      carbs: 90,
-                       protein: 390,
-                        Calories: 970,
+                  'https://i.pinimg.com/1200x/6e/1e/06/6e1e0663df4ce9b20244dddf2a8233ff.jpg',
+
+                  name: 'Creamy Pasta',
+                  category: 'Lunch',
+
+                  likesCount: 155,
+                  commentsCount: 3,
+
+                  recipeId: '4',
+
+                  ingredients: [
+                    Ingredient(
+                      name: 'Pasta',
+                      quantity: '200',
+                      unit: 'g',
+                    ),
+
+                    Ingredient(
+                      name: 'Heavy Cream',
+                      quantity: '1',
+                      unit: 'cup',
+                    ),
+
+                    Ingredient(
+                      name: 'Parmesan Cheese',
+                      quantity: '1/2',
+                      unit: 'cup',
+                    ),
+
+                    Ingredient(
+                      name: 'Garlic',
+                      quantity: '2',
+                      unit: 'cloves',
+                    ),
+                  ],
+
+                  instructions: [
+                    'Boil the pasta until al dente.',
+                    'Heat the heavy cream in a pan.',
+                    'Add garlic and cook for 1–2 minutes.',
+                    'Add Parmesan cheese and stir until creamy.',
+                    'Add the cooked pasta and combine everything.',
+                  ],
+
+                  caption: 'Delicious creamy pasta!',
+
+                  estimatedTime: 30,
+
+                  fats: 90,
+                  carbs: 70,
+                  protein: 30,
+                  Calories: 707,
+                  userHandle: 'aaa@email.com',
+                  difficulty: 'medium',
                 ),
 
                 const SizedBox(height: 16),
 
                 // Recipe Card 2
                 RecipeCard(
-                  username: '@nadin',
-                  timeAgo: '13h ago',
+                  username: '@mounir',
+                  timeAgo: '1h ago',
+
                   recipeImageUrl:
-                      'https://i.pinimg.com/1200x/d3/48/1b/d3481bd5ea30bd9d5350a15c5aea9cc1.jpg',
-                  name: 'Shrimp',
-                  category: 'Lunch',
-                  likesCount: 15,
-                  commentsCount: 1,
-                  recipeId: '2',
-                  ingerdiants: '',
-                  instructions: '', 
-                  caption: '', 
-                  estimatedTime: 80,
-                   fats: 9, 
-                   carbs: 90,
-                    protein: 0,
-                     Calories: 970,
+                  'https://i.pinimg.com/736x/2b/ea/39/2bea3906382038bba9992ea9083180f4.jpg',
+
+                  name: 'Chocolate Cake',
+                  category: 'Sweets',
+
+                  likesCount: 35125,
+                  commentsCount: 180,
+
+                  recipeId: '1',
+
+                  ingredients: [
+                    Ingredient(
+                      name: 'Flour',
+                      quantity: '2',
+                      unit: 'cups',
+                    ),
+
+                    Ingredient(
+                      name: 'Sugar',
+                      quantity: '1',
+                      unit: 'cup',
+                    ),
+
+                    Ingredient(
+                      name: 'Cocoa Powder',
+                      quantity: '1/2',
+                      unit: 'cup',
+                    ),
+
+                    Ingredient(
+                      name: 'Eggs',
+                      quantity: '2',
+                      unit: 'pieces',
+                    ),
+                  ],
+
+                  instructions: [
+                    'Mix the flour, cocoa powder, and sugar.',
+                    'Add the eggs and mix well.',
+                    'Pour the mixture into a baking pan.',
+                    'Bake until fully cooked.',
+                  ],
+
+                  caption: 'Rich and delicious chocolate cake.',
+
+                  estimatedTime: 40,
+
+                  fats: 20,
+                  carbs: 60,
+                  protein: 10,
+                  Calories: 450,
+                  userHandle: 'aaa@email.com',
+                  difficulty: 'medium',
                 ),
               ],
             ),
