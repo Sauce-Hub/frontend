@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/network/end_points.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // تأكدي من استيراد الشيرد بريفرنسز
 
 class ApiHelper {
   static final ApiHelper _instance = ApiHelper._internal();
@@ -27,28 +28,43 @@ class ApiHelper {
     // Add interceptors
     dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) {
-          // Add auth token here
-          // options.headers['Authorization'] = 'Bearer $token';
+        onRequest: (options, handler) async {
+          // 1. قراءة التوكن من Storage
+          final prefs = await SharedPreferences.getInstance();
+          final token = prefs.getString(
+            'user_token',
+          ); 
+          // استبدلي user_token بالاسم اللي حفظتي بيه التوكن
+          
+          print('====================================');
+          print('TOKEN FROM STORAGE: $token');
+          print('====================================');
+          // 2. إرفاق التوكن في הـ Headers لو كان موجود
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+
           print('REQUEST: ${options.method} ${options.path}');
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          print('RESPONSE: ${response.statusCode} ${response.requestOptions.path}');
+          print(
+            'RESPONSE: ${response.statusCode} ${response.requestOptions.path}',
+          );
           return handler.next(response);
         },
         onError: (DioException e, handler) {
-  print('ERROR TYPE: ${e.type}');
-  print('STATUS CODE: ${e.response?.statusCode}');
-  print('RESPONSE DATA: ${e.response?.data}');
-  print('MESSAGE: ${e.message}');
-  return handler.next(e);
-},
+          print('ERROR TYPE: ${e.type}');
+          print('STATUS CODE: ${e.response?.statusCode}');
+          print('RESPONSE DATA: ${e.response?.data}');
+          print('MESSAGE: ${e.message}');
+          return handler.next(e);
+        },
       ),
     );
   }
 
-  // Generic request method to reduce duplication
+  // باقي الكود كما هو بدون تغيير...
   Future<Response> _request({
     required String method,
     required String endPoint,
@@ -65,7 +81,6 @@ class ApiHelper {
       );
       return response;
     } on DioException catch (e) {
-      // You can handle specific error types here
       if (e.type == DioExceptionType.connectionTimeout) {
         throw Exception('Connection timeout');
       } else if (e.type == DioExceptionType.receiveTimeout) {
@@ -79,7 +94,6 @@ class ApiHelper {
     }
   }
 
-//post
   Future<Response> postRequest({
     required String endPoint,
     Map<String, dynamic>? data,
@@ -93,7 +107,6 @@ class ApiHelper {
     );
   }
 
-//get
   Future<Response> getRequest({
     required String endPoint,
     Map<String, dynamic>? queryParameters,
@@ -105,7 +118,6 @@ class ApiHelper {
     );
   }
 
-//patch
   Future<Response> patchRequest({
     required String endPoint,
     Map<String, dynamic>? data,
@@ -119,7 +131,6 @@ class ApiHelper {
     );
   }
 
-//put
   Future<Response> putRequest({
     required String endPoint,
     Map<String, dynamic>? data,
@@ -133,7 +144,6 @@ class ApiHelper {
     );
   }
 
-//delete
   Future<Response> deleteRequest({
     required String endPoint,
     Map<String, dynamic>? data,

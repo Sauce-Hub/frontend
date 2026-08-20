@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Auth_Screens/Log_In_Screen.dart';
 import 'package:frontend/Home_Screens/Navigation.dart';
 import 'package:frontend/network/auth_service.dart';
@@ -61,17 +61,22 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (!mounted) return;
 
-      if (response.statusCode == 200 ||
-          response.statusCode == 201) {
-        // Registration successful
+     if (response.statusCode == 200 || response.statusCode == 201) {
+  // Registration successful
+  print('Register Response: ${response.data}');
 
-        print('Register Response: ${response.data}');
+  // ==== احفظي التوكن هنا ====
+  final token = response.data['token'];
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('user_token', token);
+  print('TOKEN SAVED: $token');
+  // ==========================
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Account created successfully'),
-          ),
-        );
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text('Account created successfully'),
+    ),
+  );
 
         // Go to Home
         Navigator.pushReplacement(

@@ -44,4 +44,6 @@ class AuthService {
       rethrow;
     }
   }
+
+  //get profile
 }

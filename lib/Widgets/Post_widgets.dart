@@ -405,59 +405,12 @@ class _RecipeCardState extends State<RecipeCard> {
   }
 }
 
-
-// =====================================================
-// Nutrition Item
-// =====================================================
-
-class _NutritionItem extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const _NutritionItem({
-    required this.title,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: [
-
-          Text(
-            value,
-
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFFF97316),
-            ),
-          ),
-
-          const SizedBox(height: 3),
-
-          Text(
-            title,
-
-            style: const TextStyle(
-              fontSize: 11,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
 // =====================================================
 // Nutrition Divider
 // =====================================================
 
-class _NutritionDivider extends StatelessWidget {
-  const _NutritionDivider();
+class NutritionDivider extends StatelessWidget {
+  const NutritionDivider();
 
   @override
   Widget build(BuildContext context) {

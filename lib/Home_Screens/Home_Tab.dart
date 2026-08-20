@@ -1,146 +1,99 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/Widgets/Post_widgets.dart';
-import 'package:frontend/data/ing.dart';
+import 'package:frontend/core/Recipes_Cubit.dart';
+import 'package:frontend/core/Recipes_State.dart';
+
+
 
 class HomeTab extends StatelessWidget {
   const HomeTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-    appBar: AppBar(
-      leading: Icon(Icons.food_bank, color: Color(0xFFF97316),),
-      backgroundColor: Color.fromARGB(255, 252, 238, 228),
-      centerTitle: true,
-      title: Text("Sauce hub", selectionColor: Color(0xFFF97316),),
-    ),
-
-    body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-
-            RecipeCard(
-              username: '@nadin',
-              timeAgo: '13h ago',
-
-              recipeImageUrl:
-              'https://i.pinimg.com/1200x/d3/48/1b/d3481bd5ea30bd9d5350a15c5aea9cc1.jpg',
-
-              name: 'Shrimp',
-              category: 'Lunch',
-
-              likesCount: 15,
-              commentsCount: 1,
-
-              recipeId: '2',
-
-              ingredients: [
-                Ingredient(
-                  name: 'Shrimp',
-                  quantity: '500',
-                  unit: 'g',
-                ),
-
-                Ingredient(
-                  name: 'Garlic',
-                  quantity: '3',
-                  unit: 'cloves',
-                ),
-
-                Ingredient(
-                  name: 'Butter',
-                  quantity: '2',
-                  unit: 'tbsp',
-                ),
-              ],
-
-              instructions: [
-                'Clean and prepare the shrimp.',
-                'Heat the butter in a pan.',
-                'Add garlic and cook briefly.',
-                'Add the shrimp and cook until done.',
-              ],
-
-              caption: 'Easy garlic shrimp.',
-
-              estimatedTime: 25,
-
-              fats: 9,
-              carbs: 10,
-              protein: 30,
-              Calories: 250,
-              userHandle: 'aaa@email.com',
-              difficulty: 'medium',
-            ),
-            const SizedBox(height: 16),
-
-            RecipeCard(
-              username: '@hana',
-              timeAgo: '4h ago',
-
-              recipeImageUrl:
-              'https://i.pinimg.com/1200x/6e/1e/06/6e1e0663df4ce9b20244dddf2a8233ff.jpg',
-
-              name: 'Creamy Pasta',
-              category: 'Lunch',
-
-              likesCount: 155,
-              commentsCount: 3,
-
-              recipeId: '4',
-
-              ingredients: [
-                Ingredient(
-                  name: 'Pasta',
-                  quantity: '200',
-                  unit: 'g',
-                ),
-
-                Ingredient(
-                  name: 'Heavy Cream',
-                  quantity: '1',
-                  unit: 'cup',
-                ),
-
-                Ingredient(
-                  name: 'Parmesan Cheese',
-                  quantity: '1/2',
-                  unit: 'cup',
-                ),
-
-                Ingredient(
-                  name: 'Garlic',
-                  quantity: '2',
-                  unit: 'cloves',
-                ),
-              ],
-
-              instructions: [
-                'Boil the pasta until al dente.',
-                'Heat the heavy cream in a pan.',
-                'Add garlic and cook for 1–2 minutes.',
-                'Add Parmesan cheese and stir until creamy.',
-                'Add the cooked pasta and combine everything.',
-              ],
-
-              caption: 'Delicious creamy pasta!',
-
-              estimatedTime: 30,
-
-              fats: 90,
-              carbs: 70,
-              protein: 30,
-              Calories: 707,
-              userHandle: 'aaa@email.com',
-              difficulty: 'medium',
-            ),
-
+    return BlocProvider(
+      // 1. تشغيل الكيوبت وجلب البيانات أول ما الشاشة تفتح
+      create: (context) => RecipesCubit()..fetchFypRecipes(),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: const Icon(Icons.food_bank, color: Color(0xFFF97316)),
+          backgroundColor: const Color.fromARGB(255, 252, 238, 228),
+          centerTitle: true,
+          title: const Text("Sauce hub"),
+        ),
+        body: BlocBuilder<RecipesCubit, RecipesState>(
+          builder: (context, state) {
+            // 2. loading
+            if (state is RecipesLoadingState) {
+              return const Center(
+                child: CircularProgressIndicator(color: Color(0xFFF97316)),
+              );
+            } 
             
-          ]
+            // 3. حالة نجاح وصول البيانات من الباك إند
+            else if (state is RecipesSuccessState) {
+              if (state.recipes.isEmpty) {
+                return const Center(child: Text("No recipes"));
+              }
 
-        )
-    )
+              return ListView.separated(
+                padding: const EdgeInsets.all(16.0),
+                itemCount: state.recipes.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 16),
+                itemBuilder: (context, index) {
+                  final recipe = state.recipes[index];
+
+                  // تحويل بيانات الـ RecipeModel المرجعة من الـ API لـ RecipeCard
+                  return RecipeCard(
+                    recipeId: recipe.recipeId,
+                    username: recipe.username,
+                    userHandle: recipe.userHandle,
+                    timeAgo: recipe.timeAgo,
+                    recipeImageUrl: recipe.recipeImageUrl,
+                    name: recipe.name,
+                    category: recipe.category,
+                    caption: recipe.caption,
+                    estimatedTime: recipe.estimatedTime,
+                    difficulty: recipe.difficulty,
+                    ingredients: recipe.ingredients,
+                    instructions: recipe.instructions,
+                    Calories: recipe.calories,
+                    fats: recipe.fats,
+                    carbs: recipe.carbs,
+                    protein: recipe.protein,
+                    likesCount: recipe.likesCount,
+                    commentsCount: recipe.commentsCount,
+                  );
+                },
+              );
+            } 
+            
+            // 4. حالة وجود خطأ
+            else if (state is RecipesErrorState) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("something went wrong ${state.errorMessage}"),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<RecipesCubit>().fetchFypRecipes();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF97316),
+                      ),
+                      child: const Text("try again", style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return const SizedBox();
+          },
+        ),
+      ),
     );
   }
 }

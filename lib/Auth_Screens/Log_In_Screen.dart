@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/Auth_Screens/Forget_Password.dart';
 import 'package:frontend/Home_Screens/Home_Tab.dart';
 import 'package:frontend/Home_Screens/Navigation.dart';
@@ -55,9 +55,15 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Login successful
+  print('Login Response: ${response.data}');
 
-        print('Login Response: ${response.data}');
+  // ==== احفظي التوكن هنا ====
+  final token = response.data['token'];
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('user_token', token);
+  print('TOKEN SAVED: $token');
+  // ==========================
+
 
         Navigator.pushReplacement(
           context,

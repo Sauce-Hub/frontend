@@ -8,4 +8,12 @@ class Ingredient {
     required this.quantity,
     required this.unit,
   });
+
+  factory Ingredient.fromJson(Map<String, dynamic> json) {
+    return Ingredient(
+      name: json['name'] ?? json['ingredient'] ?? '',
+      quantity: json['quantity']?.toString() ?? '',
+      unit: json['unit'] ?? '',
+    );
+  }
 }
