@@ -43,11 +43,11 @@ class RecipeModel {
 
   factory RecipeModel.fromJson(Map<String, dynamic> json) {
     return RecipeModel(
-      recipeId: json['recipeId'] ?? json['_id'] ?? '',
+      recipeId: (json['receipt_id'] ?? json['_id'] ?? '').toString(),
       username: json['username'] ?? '',
       userHandle: json['userHandle'] ?? '',
       timeAgo: json['timeAgo'] ?? '',
-      recipeImageUrl: json['recipeImageUrl'] ?? '',
+      recipeImageUrl: json['image_url'] ?? '',
       name: json['name'] ?? '',
       category: json['category'] ?? '',
       caption: json['caption'] ?? '',

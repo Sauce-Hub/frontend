@@ -25,6 +25,7 @@ class RecipeService {
   }
 
   Future<RecipeModel> getRecipeDetail(String recipeId) async {
+    print('Fetching recipe with id: $recipeId'); // ← ضيف السطر ده مؤقتًا
   try {
     final Response response = await _apiHelper.getRequest(
       endPoint: '${EndPoints.detailed}$recipeId/',
