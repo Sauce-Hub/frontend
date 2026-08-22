@@ -37,18 +37,7 @@ class ProfilePost extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => RecipeDetailsScreen(
-                recipeId: recipeId,
-                username: username,
-                timeAgo: timeAgo,
-                recipeImageUrl: recipeImageUrl,
-                title: title,
-                category: category,
-                ingredients: ingredients,
-                instructions: instructions,
-                likesCount: likesCount,
-                commentsCount: commentsCount,
-                userHandle: 'aaa@email.com',
-                difficulty: 'medium', cookingTime: '10 min',
+                receipt_id: recipeId,
 
               ),
             ),

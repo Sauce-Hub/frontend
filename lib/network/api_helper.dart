@@ -15,9 +15,9 @@ class ApiHelper {
     dio = Dio(
       BaseOptions(
         baseUrl: EndPoints.baseUrl,
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-        sendTimeout: const Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 20),
+        receiveTimeout: const Duration(seconds: 90),
+        sendTimeout: const Duration(seconds: 20),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -29,24 +29,26 @@ class ApiHelper {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // 1. قراءة التوكن من Storage
-          final prefs = await SharedPreferences.getInstance();
-          final token = prefs.getString(
-            'user_token',
-          ); 
-          // استبدلي user_token بالاسم اللي حفظتي بيه التوكن
-          
-          print('====================================');
-          print('TOKEN FROM STORAGE: $token');
-          print('====================================');
-          // 2. إرفاق التوكن في הـ Headers لو كان موجود
-          if (token != null && token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
+  final prefs = await SharedPreferences.getInstance();
 
-          print('REQUEST: ${options.method} ${options.path}');
-          return handler.next(options);
-        },
+  final token = prefs.getString('user_token');
+
+  print('====================================');
+  print('TOKEN EXISTS: ${token != null && token.isNotEmpty}');
+  print('REQUEST METHOD: ${options.method}');
+  print('REQUEST URL: ${options.uri}');
+  print('REQUEST HEADERS BEFORE TOKEN: ${options.headers}');
+  print('REQUEST DATA: ${options.data}');
+
+  if (token != null && token.isNotEmpty) {
+    options.headers['Authorization'] = 'Bearer $token';
+  }
+
+  print('REQUEST HEADERS AFTER TOKEN: ${options.headers}');
+  print('====================================');
+
+  return handler.next(options);
+},
         onResponse: (response, handler) {
           print(
             'RESPONSE: ${response.statusCode} ${response.requestOptions.path}',
@@ -109,11 +111,13 @@ class ApiHelper {
 
   Future<Response> getRequest({
     required String endPoint,
+    Map<String, dynamic>? data,
     Map<String, dynamic>? queryParameters,
   }) {
     return _request(
       method: 'GET',
       endPoint: endPoint,
+      data: data,
       queryParameters: queryParameters,
     );
   }

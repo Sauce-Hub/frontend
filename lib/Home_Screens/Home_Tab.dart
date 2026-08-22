@@ -4,15 +4,12 @@ import 'package:frontend/Widgets/Post_widgets.dart';
 import 'package:frontend/core/Recipes_Cubit.dart';
 import 'package:frontend/core/Recipes_State.dart';
 
-
-
 class HomeTab extends StatelessWidget {
   const HomeTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      // 1. تشغيل الكيوبت وجلب البيانات أول ما الشاشة تفتح
       create: (context) => RecipesCubit()..fetchFypRecipes(),
       child: Scaffold(
         appBar: AppBar(
@@ -23,15 +20,11 @@ class HomeTab extends StatelessWidget {
         ),
         body: BlocBuilder<RecipesCubit, RecipesState>(
           builder: (context, state) {
-            // 2. loading
             if (state is RecipesLoadingState) {
               return const Center(
                 child: CircularProgressIndicator(color: Color(0xFFF97316)),
               );
-            } 
-            
-            // 3. حالة نجاح وصول البيانات من الباك إند
-            else if (state is RecipesSuccessState) {
+            } else if (state is RecipesSuccessState) {
               if (state.recipes.isEmpty) {
                 return const Center(child: Text("No recipes"));
               }
@@ -39,11 +32,11 @@ class HomeTab extends StatelessWidget {
               return ListView.separated(
                 padding: const EdgeInsets.all(16.0),
                 itemCount: state.recipes.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 16),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 16),
                 itemBuilder: (context, index) {
                   final recipe = state.recipes[index];
 
-                  // تحويل بيانات الـ RecipeModel المرجعة من الـ API لـ RecipeCard
                   return RecipeCard(
                     recipeId: recipe.recipeId,
                     username: recipe.username,
@@ -66,10 +59,7 @@ class HomeTab extends StatelessWidget {
                   );
                 },
               );
-            } 
-            
-            // 4. حالة وجود خطأ
-            else if (state is RecipesErrorState) {
+            } else if (state is RecipesErrorState) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +73,10 @@ class HomeTab extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFF97316),
                       ),
-                      child: const Text("try again", style: TextStyle(color: Colors.white)),
+                      child: const Text(
+                        "try again",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),

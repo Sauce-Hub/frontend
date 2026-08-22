@@ -67,9 +67,15 @@ class _SignupScreenState extends State<SignupScreen> {
 
   // ==== احفظي التوكن هنا ====
   final token = response.data['token'];
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('user_token', token);
-  print('TOKEN SAVED: $token');
+final userId = response.data['user']['user_id'];
+
+final prefs = await SharedPreferences.getInstance();
+
+await prefs.setString('user_token', token);
+await prefs.setInt('user_id', userId);
+
+print('TOKEN SAVED: $token');
+print('USER ID SAVED: $userId');
   // ==========================
 
   ScaffoldMessenger.of(context).showSnackBar(

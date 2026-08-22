@@ -1,5 +1,7 @@
-import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/network/chatbot_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -9,8 +11,12 @@ class ChatbotScreen extends StatefulWidget {
 }
 
 class _ChatbotScreenState extends State<ChatbotScreen> {
-  final TextEditingController _messageController = TextEditingController();
+  final TextEditingController _messageController =
+      TextEditingController();
+
   final ScrollController _scrollController = ScrollController();
+
+  final ChatService _chatService = ChatService();
 
   final List<ChatMessage> _messages = [
     ChatMessage(
@@ -38,13 +44,17 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   }
 
   // --------------------------------------------------
-  // MOCK FUNCTION
+  // SEND MESSAGE
   // --------------------------------------------------
+
   Future<void> _sendMessage() async {
     final text = _messageController.text.trim();
 
-    if (text.isEmpty || _isLoading) return;
+    if (text.isEmpty || _isLoading) {
+      return;
+    }
 
+    // Add user's message
     setState(() {
       _messages.add(
         ChatMessage(
@@ -59,51 +69,175 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
     _scrollToBottom();
 
-    // Mock AI response
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      // Call backend
+      final prefs = await SharedPreferences.getInstance();
+final userId = prefs.getInt('user_id');
 
-    String botResponse;
+print('CHAT USER ID: $userId');
+print('CHAT MESSAGE: $text');
 
-    if (text.toLowerCase().contains('chicken') ||
-        text.contains('فراخ') ||
-        text.contains('فراخ')) {
-      botResponse =
-          "You can try a delicious chicken pasta! 🍝\n\n"
-          "You'll need chicken, pasta, cream, garlic and "
-          "some Parmesan cheese.";
-    } else if (text.toLowerCase().contains('pasta') ||
-        text.contains('مكرونة')) {
-      botResponse =
-          "How about a creamy pasta? 😋\n\n"
-          "You can make it with pasta, cream, garlic, "
-          "Parmesan and black pepper.";
-    } else if (text.toLowerCase().contains('breakfast') ||
-        text.contains('فطار')) {
-      botResponse =
-          "For breakfast, you could try scrambled eggs "
-          "with avocado toast 🥑🍳";
-    } else {
-      botResponse =
-          "That sounds delicious! 😋\n\n"
-          "Tell me what ingredients you have, and I'll "
-          "help you come up with a recipe.";
+
+if (userId == null) {
+  print('User ID not found');
+  if (!mounted) return;
+
+  setState(() {
+    _messages.add(
+      ChatMessage(
+        text: 'User information not found. Please login again.',
+        isUser: false,
+      ),
+    );
+    _isLoading = false;
+  });
+
+  _scrollToBottom();
+  return;
+}
+      final Response response =
+          await _chatService.exploreChatResponse(
+            userId: userId,
+           userPrompt: text,
+          );
+
+      // Extract bot response
+      final String botResponse = _extractBotResponse(response.data);
+
+      if (!mounted) return;
+
+      setState(() {
+        _messages.add(
+          ChatMessage(
+            text: botResponse,
+            isUser: false,
+          ),
+        );
+
+        _isLoading = false;
+      });
+
+      _scrollToBottom();
+    } on DioException catch (e) {
+      if (!mounted) return;
+
+      String errorMessage;
+
+      if (e.response?.statusCode == 400) {
+        errorMessage =
+            'Invalid request. Please check your message and try again.';
+      } else if (e.response?.statusCode == 401) {
+        errorMessage =
+            'You are not authorized. Please login again.';
+      } else if (e.response?.statusCode == 404) {
+        errorMessage =
+            'Chatbot endpoint was not found. Please check the API endpoint.';
+      } else if (e.response?.statusCode == 500) {
+        errorMessage =
+            'The server encountered an error. Please try again later.';
+      } else {
+        errorMessage =
+            'Something went wrong. Please check your connection and try again.';
+      }
+
+      setState(() {
+        _messages.add(
+          ChatMessage(
+            text: errorMessage,
+            isUser: false,
+          ),
+        );
+
+        _isLoading = false;
+      });
+
+      _scrollToBottom();
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _messages.add(
+          ChatMessage(
+            text: 'Something went wrong. Please try again.',
+            isUser: false,
+          ),
+        );
+
+        _isLoading = false;
+      });
+
+      _scrollToBottom();
+    }
+  }
+
+  // --------------------------------------------------
+  // EXTRACT RESPONSE
+  // --------------------------------------------------
+
+  String _extractBotResponse(dynamic data) {
+    if (data == null) {
+      return 'I received an empty response from the server.';
     }
 
-    if (!mounted) return;
+    // If backend returns a String directly
+    if (data is String) {
+      return data;
+    }
 
-    setState(() {
-      _messages.add(
-        ChatMessage(
-          text: botResponse,
-          isUser: false,
-        ),
-      );
+    // If backend returns JSON
+    if (data is Map) {
+      // Try the most common response keys
+      if (data['response'] != null) {
+        return data['response'].toString();
+      }
 
-      _isLoading = false;
-    });
+      if (data['message'] != null) {
+        return data['message'].toString();
+      }
 
-    _scrollToBottom();
+      if (data['reply'] != null) {
+        return data['reply'].toString();
+      }
+
+      if (data['answer'] != null) {
+        return data['answer'].toString();
+      }
+
+      if (data['data'] != null) {
+        final nestedData = data['data'];
+
+        if (nestedData is String) {
+          return nestedData;
+        }
+
+        if (nestedData is Map) {
+          if (nestedData['response'] != null) {
+            return nestedData['response'].toString();
+          }
+
+          if (nestedData['message'] != null) {
+            return nestedData['message'].toString();
+          }
+
+          if (nestedData['reply'] != null) {
+            return nestedData['reply'].toString();
+          }
+
+          if (nestedData['answer'] != null) {
+            return nestedData['answer'].toString();
+          }
+        }
+      }
+
+      return data.toString();
+    }
+
+    return data.toString();
   }
+
+  // --------------------------------------------------
+  // SCROLL TO BOTTOM
+  // --------------------------------------------------
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -117,18 +251,24 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     });
   }
 
+  // --------------------------------------------------
+  // BUILD
+  // --------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
 
       appBar: AppBar(
-        
         backgroundColor: backgroundColor,
         elevation: 0,
         centerTitle: true,
 
-        leading:Icon(Icons.smart_toy, color: (primaryColor),),
+        leading: const Icon(
+          Icons.smart_toy,
+          color: primaryColor,
+        ),
 
         title: const Text(
           'Sauce Hub',
@@ -142,18 +282,22 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
       body: Column(
         children: [
-          // Chatbot Header
+          // Bot Header
           _buildBotHeader(),
 
           // Messages
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
+
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 10,
               ),
-              itemCount: _messages.length + (_isLoading ? 1 : 0),
+
+              itemCount:
+                  _messages.length + (_isLoading ? 1 : 0),
+
               itemBuilder: (context, index) {
                 if (index == _messages.length && _isLoading) {
                   return _buildTypingIndicator();
@@ -166,7 +310,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             ),
           ),
 
-          // Input Area
+          // Input
           _buildMessageInput(),
         ],
       ),
@@ -180,15 +324,24 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   Widget _buildBotHeader() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),
+
+      padding: const EdgeInsets.fromLTRB(
+        20,
+        10,
+        20,
+        16,
+      ),
+
       child: Row(
         children: [
           Container(
             width: 50,
             height: 50,
+
             decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
+
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.06),
@@ -197,7 +350,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 ),
               ],
             ),
-            child:  Image.asset(
+
+            child: Image.asset(
               'assets/Logo.png',
             ),
           ),
@@ -209,6 +363,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             children: [
               Text(
                 'Sauce Assistant',
+
                 style: TextStyle(
                   color: textColor,
                   fontSize: 17,
@@ -230,6 +385,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
                   Text(
                     'Online',
+
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 13,
@@ -249,14 +405,16 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   // --------------------------------------------------
 
   Widget _buildMessageBubble(ChatMessage message) {
-    final isUser = message.isUser;
+    final bool isUser = message.isUser;
 
     return Align(
       alignment:
           isUser ? Alignment.centerRight : Alignment.centerLeft,
+
       child: Container(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.78,
+          maxWidth:
+              MediaQuery.of(context).size.width * 0.78,
         ),
 
         margin: EdgeInsets.only(
@@ -271,13 +429,18 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         ),
 
         decoration: BoxDecoration(
-          color: isUser ? primaryColor : botBubbleColor,
+          color:
+              isUser ? primaryColor : botBubbleColor,
 
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(18),
             topRight: const Radius.circular(18),
-            bottomLeft: Radius.circular(isUser ? 18 : 4),
-            bottomRight: Radius.circular(isUser ? 4 : 18),
+
+            bottomLeft:
+                Radius.circular(isUser ? 18 : 4),
+
+            bottomRight:
+                Radius.circular(isUser ? 4 : 18),
           ),
 
           boxShadow: [
@@ -292,8 +455,11 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
         child: Text(
           message.text,
+
           style: TextStyle(
-            color: isUser ? Colors.white : textColor,
+            color:
+                isUser ? Colors.white : textColor,
+
             fontSize: 15,
             height: 1.4,
           ),
@@ -309,6 +475,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   Widget _buildTypingIndicator() {
     return Align(
       alignment: Alignment.centerLeft,
+
       child: Container(
         margin: const EdgeInsets.only(
           right: 50,
@@ -322,7 +489,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
+
+          borderRadius:
+              BorderRadius.circular(18),
 
           boxShadow: [
             BoxShadow(
@@ -335,8 +504,11 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
         child: const SizedBox(
           width: 35,
+
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween,
+
             children: [
               _Dot(),
               _Dot(),
@@ -364,6 +536,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
         decoration: const BoxDecoration(
           color: Colors.white,
+
           border: Border(
             top: BorderSide(
               color: Color(0xFFF1F1F1),
@@ -377,14 +550,18 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
               child: TextField(
                 controller: _messageController,
 
-                textInputAction: TextInputAction.send,
+                textInputAction:
+                    TextInputAction.send,
+
+                enabled: !_isLoading,
 
                 onSubmitted: (_) {
                   _sendMessage();
                 },
 
                 decoration: InputDecoration(
-                  hintText: 'Ask me about recipes...',
+                  hintText:
+                      'Ask me about recipes...',
 
                   hintStyle: const TextStyle(
                     color: Colors.grey,
@@ -392,26 +569,37 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                   ),
 
                   filled: true,
+
                   fillColor: backgroundColor,
 
-                  contentPadding: const EdgeInsets.symmetric(
+                  contentPadding:
+                      const EdgeInsets.symmetric(
                     horizontal: 18,
                     vertical: 13,
                   ),
 
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius:
+                        BorderRadius.circular(25),
+
                     borderSide: BorderSide.none,
                   ),
 
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
+                  enabledBorder:
+                      OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(25),
+
                     borderSide: BorderSide.none,
                   ),
 
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: const BorderSide(
+                  focusedBorder:
+                      OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(25),
+
+                    borderSide:
+                        const BorderSide(
                       color: primaryColor,
                       width: 1,
                     ),
@@ -423,22 +611,34 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             const SizedBox(width: 8),
 
             GestureDetector(
-              onTap: _sendMessage,
+              onTap:
+                  _isLoading ? null : _sendMessage,
 
               child: Container(
                 width: 48,
                 height: 48,
 
-                decoration: const BoxDecoration(
-                  color: primaryColor,
+                decoration: BoxDecoration(
+                  color: _isLoading
+                      ? Colors.grey
+                      : primaryColor,
+
                   shape: BoxShape.circle,
                 ),
 
-                child: const Icon(
-                  Icons.send_rounded,
-                  color: Colors.white,
-                  size: 21,
-                ),
+                child: _isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.all(14),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.send_rounded,
+                        color: Colors.white,
+                        size: 21,
+                      ),
               ),
             ),
           ],
@@ -474,6 +674,7 @@ class _Dot extends StatelessWidget {
     return Container(
       width: 6,
       height: 6,
+
       decoration: const BoxDecoration(
         color: Color(0xFFF97316),
         shape: BoxShape.circle,

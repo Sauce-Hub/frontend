@@ -83,18 +83,8 @@ class _RecipeCardState extends State<RecipeCard> {
           context,
           MaterialPageRoute(
             builder: (context) => RecipeDetailsScreen(
-              recipeId: widget.recipeId,
-              username: widget.username,
-              timeAgo: widget.timeAgo,
-              recipeImageUrl: widget.recipeImageUrl,
-              title: widget.name,
-              category: widget.category,
-              ingredients: widget.ingredients,
-              instructions: widget.instructions,
-              likesCount: currentLikes,
-              commentsCount: widget.commentsCount,
-              userHandle: 'aaa@email.com',
-              difficulty: 'medium', cookingTime: '10 min',
+              receipt_id: widget.recipeId,
+             
 
             ),
           ),

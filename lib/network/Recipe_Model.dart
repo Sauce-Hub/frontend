@@ -70,3 +70,19 @@ class RecipeModel {
     );
   }
 }
+
+class ReceiptUser {
+  final int userId;
+  final String name;
+
+  ReceiptUser({required this.userId, required this.name});
+
+  factory ReceiptUser.fromJson(Map<String, dynamic> json) {
+    return ReceiptUser(
+      userId: json['user_id'],
+      name: json['name'],
+    );
+  }
+}
+
+

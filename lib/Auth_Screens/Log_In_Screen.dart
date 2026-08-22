@@ -16,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  
 
   bool _isPasswordObscured = true;
   bool _isLoading = false;
@@ -58,10 +59,22 @@ class _LoginScreenState extends State<LoginScreen> {
   print('Login Response: ${response.data}');
 
   // ==== احفظي التوكن هنا ====
+  if (response.statusCode == 200 || response.statusCode == 201) {
+  print('Login Response: ${response.data}');
+
+  // ==== احفظي التوكن والـ user ID هنا ====
+
   final token = response.data['token'];
+  final userId = response.data['user']['user_id'];
+
   final prefs = await SharedPreferences.getInstance();
+
   await prefs.setString('user_token', token);
+  await prefs.setInt('user_id', userId);
+
   print('TOKEN SAVED: $token');
+  print('USER ID SAVED: $userId');
+}
   // ==========================
 
 
