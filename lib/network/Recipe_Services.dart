@@ -23,12 +23,13 @@ class RecipeService {
       rethrow;
     }
   }
-
-  Future<RecipeModel> getRecipeDetail(String recipeId) async {
-    print('Fetching recipe with id: $recipeId'); // ← ضيف السطر ده مؤقتًا
+Future<RecipeModel> getRecipeDetail(String recipeId) async {
   try {
     final Response response = await _apiHelper.getRequest(
-      endPoint: '${EndPoints.detailed}$recipeId/',
+      endPoint: EndPoints.detailed,
+      data: {
+        "receipt_id": int.parse(recipeId),
+      },
     );
 
     if (response.data != null && response.data['receipt'] != null) {
