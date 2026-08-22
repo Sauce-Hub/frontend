@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Home_Screens/Detailed_Screens.dart';
-import 'package:frontend/data/ing.dart';
+import 'package:frontend/network/image_helper.dart';
 
 class ProfilePost extends StatelessWidget {
   final String recipeId;
@@ -9,9 +8,6 @@ class ProfilePost extends StatelessWidget {
   final String recipeImageUrl;
   final String title;
   final String category;
-
-  final List<Ingredient> ingredients;
-  final List<String> instructions;
 
   final int likesCount;
   final int commentsCount;
@@ -24,38 +20,15 @@ class ProfilePost extends StatelessWidget {
     required this.recipeImageUrl,
     required this.title,
     required this.category,
-    required this.ingredients,
-    required this.instructions,
     required this.likesCount,
     required this.commentsCount,
   });
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => RecipeDetailsScreen(
-                recipeId: recipeId,
-                username: username,
-                timeAgo: timeAgo,
-                recipeImageUrl: recipeImageUrl,
-                title: title,
-                category: category,
-                ingredients: ingredients,
-                instructions: instructions,
-                likesCount: likesCount,
-                commentsCount: commentsCount,
-                userHandle: 'aaa@email.com',
-                difficulty: 'medium', cookingTime: '10 min',
+    final fullImageUrl = buildImageUrl(recipeImageUrl);
 
-              ),
-            ),
-          );
-        },
-
-        child: Container(
+    return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -63,6 +36,7 @@ class ProfilePost extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(.04),
             blurRadius: 8,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -70,36 +44,46 @@ class ProfilePost extends StatelessWidget {
 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
+
+          // IMAGE
           Expanded(
             flex: 6,
             child: Stack(
               children: [
+
                 Positioned.fill(
                   child: Hero(
                     tag: 'recipe_$recipeId',
 
-                    child: Image.network(
-                      recipeImageUrl,
+                    child: fullImageUrl.isNotEmpty
+                        ? Image.network(
+                      fullImageUrl,
                       fit: BoxFit.cover,
-                    ),
+
+                      errorBuilder: (context, error, stackTrace) {
+                        debugPrint('IMAGE URL: $fullImageUrl');
+                        debugPrint('IMAGE ERROR: $error');
+                        debugPrint('STACK: $stackTrace');
+
+                        return _buildPlaceholder();
+                      },
+                    )
+                        : _buildPlaceholder(),
                   ),
                 ),
 
+                // Favorite button
                 Positioned(
                   top: 8,
                   right: 8,
-
                   child: Container(
                     width: 34,
                     height: 34,
-
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
                     ),
-
                     child: const Icon(
                       Icons.favorite_border,
                       size: 19,
@@ -111,6 +95,7 @@ class ProfilePost extends StatelessWidget {
             ),
           ),
 
+          // INFORMATION
 
           Expanded(
             flex: 3,
@@ -124,23 +109,24 @@ class ProfilePost extends StatelessWidget {
               child: Column(
                 crossAxisAlignment:
                 CrossAxisAlignment.start,
-
                 children: [
+
+                  // Category
                   Container(
-                    padding: const EdgeInsets.symmetric(
+                    padding:
+                    const EdgeInsets.symmetric(
                       horizontal: 9,
                       vertical: 4,
                     ),
-
                     decoration: BoxDecoration(
                       color: const Color(0xFFF5F1F0),
                       borderRadius:
                       BorderRadius.circular(15),
                     ),
-
                     child: Text(
                       category,
-
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 11,
                         color: Color(0xFF674F47),
@@ -150,23 +136,48 @@ class ProfilePost extends StatelessWidget {
 
                   const SizedBox(height: 7),
 
+                  // Recipe name
                   Text(
                     title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 10,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF24201F),
                     ),
                   ),
+
+                  const Spacer(),
+
+                  // Time
+                  if (timeAgo.isNotEmpty)
+                    Text(
+                      timeAgo,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Color(0xFF9C8F89),
+                      ),
+                    ),
                 ],
               ),
             ),
           ),
         ],
       ),
-    )
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      color: const Color(0xFFFFE4D7),
+      child: const Center(
+        child: Icon(
+          Icons.restaurant_menu,
+          size: 50,
+          color: Color(0xFFFF7043),
+        ),
+      ),
     );
   }
 }

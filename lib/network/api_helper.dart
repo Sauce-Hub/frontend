@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/network/end_points.dart';
+import 'package:frontend/network/token_storage.dart';
 
 class ApiHelper {
   static final ApiHelper _instance = ApiHelper._internal();
@@ -18,7 +19,7 @@ class ApiHelper {
         receiveTimeout: const Duration(seconds: 10),
         sendTimeout: const Duration(seconds: 10),
         headers: {
-          'Content-Type': 'application/json',
+          // 'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       ),
@@ -27,16 +28,32 @@ class ApiHelper {
     // Add interceptors
     dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) {
-          // Add auth token here
-          // options.headers['Authorization'] = 'Bearer $token';
-          print('REQUEST: ${options.method} ${options.path}');
+        onRequest: (options, handler) async {
+          final token = await TokenStorage.getToken();
+
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+
+          print(
+            'REQUEST: ${options.method} ${options.path}',
+          );
+
           return handler.next(options);
         },
+
         onResponse: (response, handler) {
-          print('RESPONSE: ${response.statusCode} ${response.requestOptions.path}');
+          print(
+            'RESPONSE: ${response.statusCode} '
+                '${response.requestOptions.path}',
+          );
+
           return handler.next(response);
         },
+
+
+
+
         onError: (DioException e, handler) {
   print('ERROR TYPE: ${e.type}');
   print('STATUS CODE: ${e.response?.statusCode}');
@@ -52,47 +69,50 @@ class ApiHelper {
   Future<Response> _request({
     required String method,
     required String endPoint,
-    Map<String, dynamic>? data,
+    dynamic data,
     Map<String, dynamic>? queryParameters,
-    bool isFormData = false,
   }) async {
     try {
       final response = await dio.request(
         endPoint,
-        options: Options(method: method),
-        data: isFormData ? FormData.fromMap(data ?? {}) : data,
+        options: Options(
+          method: method,
+        ),
+        data: data,
         queryParameters: queryParameters,
       );
+
       return response;
+
     } on DioException catch (e) {
-      // You can handle specific error types here
       if (e.type == DioExceptionType.connectionTimeout) {
         throw Exception('Connection timeout');
-      } else if (e.type == DioExceptionType.receiveTimeout) {
+      }
+
+      if (e.type == DioExceptionType.receiveTimeout) {
         throw Exception('Response timeout');
-      } else if (e.response?.statusCode == 401) {
+      }
+
+      if (e.response?.statusCode == 401) {
         throw Exception('Unauthorized');
       }
+
       rethrow;
     } catch (e) {
       throw Exception('Unexpected error: $e');
     }
   }
-
 //post
   Future<Response> postRequest({
     required String endPoint,
-    Map<String, dynamic>? data,
-    bool isFormData = false,
+    dynamic data,
   }) {
     return _request(
       method: 'POST',
       endPoint: endPoint,
       data: data,
-      isFormData: isFormData,
     );
   }
-
 //get
   Future<Response> getRequest({
     required String endPoint,
@@ -108,28 +128,23 @@ class ApiHelper {
 //patch
   Future<Response> patchRequest({
     required String endPoint,
-    Map<String, dynamic>? data,
-    bool isFormData = false,
+    dynamic data,
   }) {
     return _request(
       method: 'PATCH',
       endPoint: endPoint,
       data: data,
-      isFormData: isFormData,
     );
   }
 
-//put
   Future<Response> putRequest({
     required String endPoint,
-    Map<String, dynamic>? data,
-    bool isFormData = false,
+    dynamic data,
   }) {
     return _request(
       method: 'PUT',
       endPoint: endPoint,
       data: data,
-      isFormData: isFormData,
     );
   }
 

@@ -41,7 +41,7 @@ import 'package:frontend/Auth_Screens/Sign_Up_Screen.dart';
                const SizedBox(height: 28),
 
                //text row
-              Row(
+              Wrap(
                 children: [
                 Text(
             'Welcome to ',

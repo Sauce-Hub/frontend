@@ -4,13 +4,11 @@ class EditProfileScreen extends StatefulWidget {
 
   final String name;
   final String username;
-  final String profileImage;
 
   const EditProfileScreen({
     super.key,
     required this.name,
     required this.username,
-    required this.profileImage,
   });
 
   @override
@@ -104,54 +102,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
 
                       Container(
-                        width: 92,
-                        height: 92,
-
-                        decoration:
-                        BoxDecoration(
+                        width: 108,
+                        height: 108,
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
-
+                          color: const Color(0xFFFFE4D7),
                           border: Border.all(
                             color: Colors.white,
                             width: 4,
                           ),
-
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black
-                                  .withOpacity(.1),
-
-                              blurRadius: 10,
+                              color: Colors.black.withOpacity(.12),
+                              blurRadius: 15,
                             ),
                           ],
-
-                          image:
-                          DecorationImage(
-                            image: NetworkImage(
-                              widget.profileImage,
-                            ),
-
-                            fit: BoxFit.cover,
-                          ),
                         ),
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      // CHANGE PHOTO
-
-                      TextButton(
-                        onPressed: () {},
-
-                        child: const Text(
-                          'Change Profile Picture',
-
-                          style: TextStyle(
-                            color:
-                            Color(0xFFFF6238),
-
-                            fontSize: 15,
-                          ),
+                        child: const Icon(
+                          Icons.person,
+                          size: 55,
+                          color: Color(0xFFFF7043),
                         ),
                       ),
 
@@ -441,8 +411,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         'username':
                         usernameController.text,
 
-                        'profileImage':
-                        widget.profileImage,
                       },
                     );
                   },

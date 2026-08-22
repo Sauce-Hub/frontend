@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:frontend/network/api_helper.dart';
 import 'package:frontend/network/end_points.dart';
+import 'package:frontend/network/token_storage.dart';
 
 class AuthService {
   final ApiHelper _apiHelper = ApiHelper();
@@ -18,6 +19,12 @@ class AuthService {
           'password': password,
         },
       );
+      final token = response.data['token'];
+
+      if (token != null) {
+        await TokenStorage.saveToken(token);
+      }
+
       return response;
     } on DioException {
       rethrow;
@@ -39,6 +46,12 @@ class AuthService {
           'password': password,
         },
       );
+      final token = response.data['token'];
+
+      if (token != null) {
+        await TokenStorage.saveToken(token);
+      }
+
       return response;
     } on DioException {
       rethrow;
